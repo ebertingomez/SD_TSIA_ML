@@ -119,3 +119,36 @@ for alpha in np.arange(1,6,1):
     fignum = fignum + 1
 
 plt.show()
+
+def printSVM(clf,X,y,fignum):
+    clf_pol.fit(X, y)
+    plt.figure(fignum, figsize=(4, 3))
+    plt.clf()
+
+    plt.scatter(clf_pol.support_vectors_[:, 0], clf_pol.support_vectors_[:, 1], s=80,
+                facecolors='none', zorder=10, edgecolors='k')
+    plt.scatter(X[:, 0], X[:, 1], c=y, zorder=10, cmap=plt.cm.Paired,
+                edgecolors='k')
+
+    plt.axis('tight')
+
+    x_min = np.amin(X,0)[0]
+    x_max = np.amax(X,0)[0]
+    y_min = np.amin(X,0)[1]
+    y_max = np.amax(X,0)[1]
+
+    XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
+    Z = clf_pol.decision_function(np.c_[XX.ravel(), YY.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(XX.shape)
+    plt.figure(fignum, figsize=(4, 3))
+    plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
+    plt.contour(XX, YY, Z, colors=['k', 'k', 'k'], linestyles=['--', '-', '--'],
+                levels=[-.5, 0, .5])
+
+    plt.xlim(x_min, x_max)
+    plt.ylim(y_min, y_max)
+
+    plt.xticks(())
+    plt.yticks(())
